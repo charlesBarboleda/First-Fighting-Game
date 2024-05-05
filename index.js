@@ -1,5 +1,8 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+const playerHealth = document.getElementById("playerHealth")
+const enemyHealth = document.getElementById("enemyHealth")
+const rounds = document.getElementById("rounds")
 
 canvas.width = 1024
 canvas.height = 576
@@ -8,19 +11,24 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 
 const gravity = 0.4
 class Sprite {
-    constructor({ position, velocity, color = "blue"}) {
+    constructor({ position, velocity, color = "blue", offset, health = 100}) {
         this.position = position
         this.velocity = velocity
         this.width = 50
         this.height = 150
         this.lastKey
         this.attackBox = {
-            position: this.position,
+            position: {
+                x: this.position.x,
+                y: this.position.y,
+            },
+            offset,
             width: 100,
             height: 50,
         }
         this.color = color
         this.isAttacking
+        this.health = health
     }
 
     draw() {
@@ -36,6 +44,8 @@ class Sprite {
 
     update() {
         this.draw()
+        this.attackBox.position.x = this.position.x + this.attackBox.offset.x
+        this.attackBox.position.y = this.position.y 
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
 
@@ -60,7 +70,11 @@ const player = new Sprite({
     velocity: {
         x: 0,
         y: 10,
-    }
+    },
+    offset: {
+        x: 0,
+        y: 0
+    },
 });
 const enemy = new Sprite({
     position:{ 
@@ -72,6 +86,10 @@ const enemy = new Sprite({
         y: 10,
     },
     color: "red",
+    offset: {
+        x: -50,
+        y: 0,
+    },
 });
 
 const keys = {
@@ -95,6 +113,16 @@ const keys = {
     },
 }
 
+function playerCollision({ rect1 , rect2 }) {
+    return (
+        rect1.position.x < rect2.position.x + rect2.attackBox.width &&
+        rect1.position.x + rect1.attackBox.width > rect2.position.x &&
+        rect1.position.y < rect2.position.y + rect2.attackBox.height &&
+        rect1.position.y + rect1.attackBox.height > rect2.position.y
+    )
+        
+    
+}
 function animate() {
     window.requestAnimationFrame(animate);
     c.fillStyle = "black";
@@ -124,13 +152,13 @@ function animate() {
     }
 
     // collision detection
-    if (player.position.x < enemy.position.x + enemy.attackBox.width &&
-        player.position.x + player.attackBox.width > enemy.position.x &&
-        player.position.y < enemy.position.y + enemy.attackBox.height &&
-        player.position.y + player.attackBox.height > enemy.position.y &&
-        player.isAttacking) {
+    if (playerCollision({ rect1: player, rect2: enemy }) && player.isAttacking) {
             player.isAttacking = false
             console.log('attack hit!')
+        }
+    if (playerCollision({ rect1: enemy, rect2: player }) && enemy.isAttacking) {
+            enemy.isAttacking = false
+            console.log('enemy attack hit!')
         }
 } 
 
@@ -150,7 +178,7 @@ window.addEventListener('keydown', (e) => {
             keys.a.pressed = true
             player.lastKey = 'a'
             break
-        case ' ':
+        case 's':
             player.attack()
             break
 
@@ -166,7 +194,7 @@ window.addEventListener('keydown', (e) => {
             keys.ArrowLeft.pressed = true
             enemy.lastKey = 'ArrowLeft'
             break
-        case 'Enter':
+        case 'ArrowDown':
             enemy.attack()
             break
     }

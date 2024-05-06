@@ -119,7 +119,7 @@ function playerCollision({ rect1 , rect2 }) {
     )
 }
 
-let timerCounter = 6;
+let timerCounter = 21;
 
 function countdownTimer () {
     if (timerCounter > 0) {
@@ -152,6 +152,16 @@ function animate() {
     player.velocity.x = 0
     enemy.velocity.x = 0
 
+    if (player.health === 0) {
+        displayText.style.display = "flex"
+        displayText.innerHTML = "Yellow Wins!"
+        timer.innerHTML = "Finished!"
+    }
+    if (enemy.health === 0) {
+        displayText.style.display = "flex"
+        displayText.innerHTML = "Blue Wins!"
+        timer.innerHTML = "Finished!"
+    }
     // player movement
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -4

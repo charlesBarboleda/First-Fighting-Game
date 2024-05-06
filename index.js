@@ -1,8 +1,8 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-const playerHealth = document.getElementById("playerHealth")
-const enemyHealth = document.getElementById("enemyHealth")
-const rounds = document.getElementById("rounds")
+const timer = document.getElementById("timer")
+
+
 
 canvas.width = 1024
 canvas.height = 576
@@ -11,7 +11,7 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 
 const gravity = 0.4
 class Sprite {
-    constructor({ position, velocity, color = "blue", offset, health = 100}) {
+    constructor({ position, velocity, color = "blue", offset}) {
         this.position = position
         this.velocity = velocity
         this.width = 50
@@ -28,7 +28,6 @@ class Sprite {
         }
         this.color = color
         this.isAttacking
-        this.health = health
     }
 
     draw() {
@@ -122,6 +121,20 @@ function playerCollision({ rect1 , rect2 }) {
     )
 }
 
+let timerCounter = 21;
+
+function countdownTimer () {
+    setTimeout(countdownTimer, 1000)
+    if (timerCounter > 0) {
+        timerCounter--
+        timer.innerHTML = timerCounter
+    }
+
+}
+
+countdownTimer()
+
+
 function animate() {
     window.requestAnimationFrame(animate);
     c.fillStyle = "black";
@@ -153,11 +166,12 @@ function animate() {
     // collision detection
     if (playerCollision({ rect1: player, rect2: enemy }) && player.isAttacking) {
             player.isAttacking = false
-            console.log('attack hit!')
+            document.querySelector('#enemyHealth').style.width = '20%'
         }
     if (playerCollision({ rect1: enemy, rect2: player }) && enemy.isAttacking) {
             enemy.isAttacking = false
-            console.log('enemy attack hit!')
+            document.querySelector('#playerHealth').style.width = '20%'
+
         }
 } 
 

@@ -1,8 +1,5 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-const timer = document.getElementById("timer")
-
-
 
 canvas.width = 1024
 canvas.height = 576
@@ -28,6 +25,7 @@ class Sprite {
         }
         this.color = color
         this.isAttacking
+        this.health = 100
     }
 
     draw() {
@@ -37,7 +35,7 @@ class Sprite {
 
         // attack box
         if (this.isAttacking){
-            c.fillStyle = "yellow"
+            c.fillStyle = "green"
             c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)}
         }
 
@@ -84,7 +82,7 @@ const enemy = new Sprite({
         x: 0,
         y: 10,
     },
-    color: "red",
+    color: "yellow",
     offset: {
         x: -50,
         y: 0,
@@ -121,13 +119,22 @@ function playerCollision({ rect1 , rect2 }) {
     )
 }
 
-let timerCounter = 21;
+let timerCounter = 6;
 
 function countdownTimer () {
-    setTimeout(countdownTimer, 1000)
     if (timerCounter > 0) {
+        setTimeout(countdownTimer, 1000)
         timerCounter--
         timer.innerHTML = timerCounter
+    } else if(player.health === enemy.health) {
+        displayText.style.display = "flex"
+        displayText.innerHTML = "Tie!"
+    } else if(player.health > enemy.health) {
+        displayText.style.display = "flex"
+        displayText.innerHTML = "Blue Wins!"
+    } else {
+        displayText.style.display = "flex"
+        displayText.innerHTML = "Yellow Wins!"
     }
 
 }
@@ -166,11 +173,13 @@ function animate() {
     // collision detection
     if (playerCollision({ rect1: player, rect2: enemy }) && player.isAttacking) {
             player.isAttacking = false
-            document.querySelector('#enemyHealth').style.width = '20%'
+            enemy.health -= 10
+            enemyHealth.style.width = enemy.health + "%"
         }
     if (playerCollision({ rect1: enemy, rect2: player }) && enemy.isAttacking) {
             enemy.isAttacking = false
-            document.querySelector('#playerHealth').style.width = '20%'
+            player.health -= 10
+            playerHealth.style.width = player.health + "%"
 
         }
 } 

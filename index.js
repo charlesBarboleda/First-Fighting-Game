@@ -120,9 +120,8 @@ function playerCollision({ rect1 , rect2 }) {
         rect1.position.y < rect2.position.y + rect2.attackBox.height &&
         rect1.position.y + rect1.attackBox.height > rect2.position.y
     )
-        
-    
 }
+
 function animate() {
     window.requestAnimationFrame(animate);
     c.fillStyle = "black";

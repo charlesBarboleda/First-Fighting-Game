@@ -119,22 +119,28 @@ function playerCollision({ rect1 , rect2 }) {
     )
 }
 
-let timerCounter = 21;
+function determineWinner({player, enemy, timerId}) {
+    clearTimeout(timerId)
+    displayText.style.display = "flex"
+    if (player.health === enemy.health) {
+        displayText.innerHTML =  "TIE!"
+    } else if (player.health > enemy.health) {
+        displayText.innerHTML =  "BLUE WINS!"
+    } else if (player.health < enemy.health) {
+        displayText.innerHTML =  "YELLOW WINS!"
+    }
+}
 
+let timerCounter = 21
+let timerId
 function countdownTimer () {
     if (timerCounter > 0) {
-        setTimeout(countdownTimer, 1000)
+        timerId = setTimeout(countdownTimer, 1000)
         timerCounter--
         timer.innerHTML = timerCounter
-    } else if(player.health === enemy.health) {
-        displayText.style.display = "flex"
-        displayText.innerHTML = "Tie!"
-    } else if(player.health > enemy.health) {
-        displayText.style.display = "flex"
-        displayText.innerHTML = "Blue Wins!"
-    } else {
-        displayText.style.display = "flex"
-        displayText.innerHTML = "Yellow Wins!"
+    }
+    if (timer === 0) {
+        determineWinner({player, enemy, timerId})
     }
 
 }
@@ -152,16 +158,6 @@ function animate() {
     player.velocity.x = 0
     enemy.velocity.x = 0
 
-    if (player.health === 0) {
-        displayText.style.display = "flex"
-        displayText.innerHTML = "Yellow Wins!"
-        timer.innerHTML = "Finished!"
-    }
-    if (enemy.health === 0) {
-        displayText.style.display = "flex"
-        displayText.innerHTML = "Blue Wins!"
-        timer.innerHTML = "Finished!"
-    }
     // player movement
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -4
@@ -192,6 +188,10 @@ function animate() {
             playerHealth.style.width = player.health + "%"
 
         }
+
+    if (player.health <= 0 || enemy.health <= 0) {
+        determineWinner({player, enemy, timerId})
+    }
 } 
 
 animate();

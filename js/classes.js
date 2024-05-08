@@ -1,8 +1,8 @@
 class Sprite {
-    constructor({ position, }) {
+    constructor({ position }) {
         this.position = position
-        this.width = 50
-        this.height = 150
+        this.width = 1024
+        this.height = 576
     }
 
     draw() {

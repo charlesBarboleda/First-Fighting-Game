@@ -47,7 +47,23 @@ const player = new Fighter({
         x: 200,
         y: 155
     },
+    sprites: {
+        idle: {
+            imageSrc: './img/samuraiMack/Idle.png',
+            framesMax: 8,
+        },
+        run: {
+            imageSrc: './img/samuraiMack/Run.png',
+            framesMax: 8,
+        },
+        jump: {
+            imageSrc: './img/samuraiMack/Jump.png',
+            framesMax: 2,
+        },
+
+    }
 });
+    
 const enemy = new Fighter({
     position:{ 
         x: 900, 
@@ -106,19 +122,26 @@ function animate() {
     background.update();
     shop.update();
     player.update();
-    enemy.update();
+    // enemy.update();
 
     player.velocity.x = 0
     enemy.velocity.x = 0
 
     // player movement
+    player.switchSprite('idle')
     if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -4
+        player.velocity.x = -3
+        player.switchSprite('run')
     } else if (keys.d.pressed && player.lastKey === 'd') {
-        player.velocity.x = 4
-    } else if (keys.w.pressed && player.lastKey === 'w') {
-        player.velocity.y = -10
-    } 
+        player.velocity.x = 3 
+        player.switchSprite('run')
+    } else {
+        player.switchSprite('idle')
+    }
+
+    if (player.velocity.y < 0) {
+        player.switchSprite('jump')
+    }
 
     // enemy movement
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
@@ -152,6 +175,7 @@ animate();
 window.addEventListener('keydown', (e) => {
     switch (e.key) {
         case 'w':
+            player.velocity.y = -10
             keys.w.pressed = true
             player.lastKey = 'w'
             break

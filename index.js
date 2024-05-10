@@ -6,6 +6,18 @@ canvas.height = 576
 
 const gravity = 0.75
 
+const shop = new Sprite ({
+    position: {
+        x: 600,
+        y: 130,
+    },
+    imageSrc: './img/shop.png',
+    scale: 2.75,
+    framesMax: 6,
+    framesCurrent: 1
+
+})
+
 const background = new Sprite({
     position: {
         x: 0,
@@ -27,6 +39,14 @@ const player = new Fighter({
         x: 0,
         y: 0
     },
+    imageSrc: './img/samuraiMack/Idle.png',
+    framesMax: 8,
+    scale: 2.5,
+    framesCurrent: 1,
+    offset: {
+        x: 200,
+        y: 155
+    },
 });
 const enemy = new Fighter({
     position:{ 
@@ -42,6 +62,15 @@ const enemy = new Fighter({
         x: -50,
         y: 0,
     },
+    imageSrc: './img/kenji/Idle.png',
+    framesMax: 4,
+    scale: 2.5,
+    framesCurrent: 1,
+    offset: {
+        x: 275,
+        y: 170
+    },
+    
 });
 
 const keys = {
@@ -65,40 +94,6 @@ const keys = {
     },
 }
 
-function playerCollision({ rect1 , rect2 }) {
-    return (
-        rect1.position.x < rect2.position.x + rect2.attackBox.width &&
-        rect1.position.x + rect1.attackBox.width > rect2.position.x &&
-        rect1.position.y < rect2.position.y + rect2.attackBox.height &&
-        rect1.position.y + rect1.attackBox.height > rect2.position.y
-    )
-}
-
-function determineWinner({player, enemy, timerId}) {
-    clearTimeout(timerId)
-    displayText.style.display = "flex"
-    if (player.health === enemy.health) {
-        displayText.innerHTML =  "TIE!"
-    } else if (player.health > enemy.health) {
-        displayText.innerHTML =  "BLUE WINS!"
-    } else if (player.health < enemy.health) {
-        displayText.innerHTML =  "YELLOW WINS!"
-    }
-}
-
-let timerCounter = 21
-let timerId
-function countdownTimer () {
-    if (timerCounter > 0) {
-        timerId = setTimeout(countdownTimer, 1000)
-        timerCounter--
-        timer.innerHTML = timerCounter
-    }
-    if (timer === 0) {
-        determineWinner({player, enemy, timerId})
-    }
-
-}
 
 countdownTimer()
 
@@ -109,6 +104,7 @@ function animate() {
     c.fillRect(0, 0, canvas.width, canvas.height);
     
     background.update();
+    shop.update();
     player.update();
     enemy.update();
 

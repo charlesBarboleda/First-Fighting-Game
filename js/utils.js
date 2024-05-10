@@ -1,34 +1,37 @@
-function playerCollision({ rect1 , rect2 }) {
+function rectangularCollision({ rectangle1, rectangle2 }) {
     return (
-        rect1.position.x < rect2.position.x + rect2.attackBox.width &&
-        rect1.position.x + rect1.attackBox.width > rect2.position.x &&
-        rect1.position.y < rect2.position.y + rect2.attackBox.height &&
-        rect1.position.y + rect1.attackBox.height > rect2.position.y
+      rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
+        rectangle2.position.x &&
+      rectangle1.attackBox.position.x <=
+        rectangle2.position.x + rectangle2.width &&
+      rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
+        rectangle2.position.y &&
+      rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
     )
-}
-
-function determineWinner({player, enemy, timerId}) {
+  }
+  
+  function determineWinner({ player, enemy, timerId }) {
     clearTimeout(timerId)
-    displayText.style.display = "flex"
+    document.querySelector('#displayText').style.display = 'flex'
     if (player.health === enemy.health) {
-        displayText.innerHTML =  "TIE!"
+      document.querySelector('#displayText').innerHTML = 'Tie'
     } else if (player.health > enemy.health) {
-        displayText.innerHTML =  "BLUE WINS!"
+      document.querySelector('#displayText').innerHTML = 'Player 1 Wins'
     } else if (player.health < enemy.health) {
-        displayText.innerHTML =  "YELLOW WINS!"
+      document.querySelector('#displayText').innerHTML = 'Player 2 Wins'
     }
-}
-
-let timerCounter = 21
-let timerId
-function countdownTimer () {
-    if (timerCounter > 0) {
-        timerId = setTimeout(countdownTimer, 1000)
-        timerCounter--
-        timer.innerHTML = timerCounter
+  }
+  
+  let timer = 60
+  let timerId
+  function decreaseTimer() {
+    if (timer > 0) {
+      timerId = setTimeout(decreaseTimer, 1000)
+      timer--
+      document.querySelector('#timer').innerHTML = timer
     }
+  
     if (timer === 0) {
-        determineWinner({player, enemy, timerId})
+      determineWinner({ player, enemy, timerId })
     }
-
-}
+  }
